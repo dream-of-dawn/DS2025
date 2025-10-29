@@ -1,15 +1,7 @@
-#include "../Project1/Vector.h"
-#include <cmath>
-#include <ctime>
-#include <iomanip>
-#include <string>
-#include "../Project1/Stack.h"
-#include <cstdlib>
-#include <iostream>
-#include <algorithm>
+#include "../Project1/3.cpp"
+#include"../Project1/1.cpp"
 using namespace std;
 int main() {
-
     // （1）在主函数中直接生成随机复数向量（包含重复项）
     int vecSize = 20;
     double minVal = -10, maxVal = 10;
@@ -82,7 +74,7 @@ int main() {
     float res = evaluate(expr, rpn);
     cout << "表达式：" << expr << endl;
     cout << "计算结果：" << res << endl;
-	cout << "=====================第三题===============" << endl;
+    cout << "=====================第三题===============" << endl;
     srand(time(0));  // 初始化随机数种子，确保每次运行数据不同
     for (int i = 0; i < 10; ++i) {
         int length = 10;
