@@ -1,0 +1,77 @@
+﻿  exp1.cpp
+C:\Users\Wang\Desktop\C++\Project1\exp1.cpp(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+C:\Users\Wang\Desktop\C++\Project1\Vector.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  (编译源文件“exp1.cpp”)
+  
+C:\Users\Wang\Desktop\C++\Project1\exp1.cpp(111,7): error C2678: 二进制“[”: 没有找到接受“const Vector<Complex<int>>”类型的左操作数的运算符(或没有可接受的转换)
+      C:\Users\Wang\Desktop\C++\Project1\Vector.h(111,5):
+      可能是“T &Vector<T>::operator [](Rank)”
+          with
+          [
+              T=Complex<int>
+          ]
+          C:\Users\Wang\Desktop\C++\Project1\exp1.cpp(111,7):
+          “T &Vector<T>::operator [](Rank)”: 不能将“this”指针从“const Vector<Complex<int>>”转换为“Vector<Complex<int>> &”
+          with
+          [
+              T=Complex<int>
+          ]
+              C:\Users\Wang\Desktop\C++\Project1\exp1.cpp(111,7):
+              转换丢失限定符
+      C:\Users\Wang\Desktop\C++\Project1\exp1.cpp(111,7):
+      尝试匹配参数列表“(const Vector<Complex<int>>, int)”时
+  
+C:\Users\Wang\Desktop\C++\Project1\exp1.cpp(117,7): error C2678: 二进制“[”: 没有找到接受“const Vector<Complex<int>>”类型的左操作数的运算符(或没有可接受的转换)
+      C:\Users\Wang\Desktop\C++\Project1\Vector.h(111,5):
+      可能是“T &Vector<T>::operator [](Rank)”
+          with
+          [
+              T=Complex<int>
+          ]
+          C:\Users\Wang\Desktop\C++\Project1\exp1.cpp(117,7):
+          “T &Vector<T>::operator [](Rank)”: 不能将“this”指针从“const Vector<Complex<int>>”转换为“Vector<Complex<int>> &”
+          with
+          [
+              T=Complex<int>
+          ]
+              C:\Users\Wang\Desktop\C++\Project1\exp1.cpp(117,7):
+              转换丢失限定符
+      C:\Users\Wang\Desktop\C++\Project1\exp1.cpp(117,7):
+      尝试匹配参数列表“(const Vector<Complex<int>>, int)”时
+  
+C:\Users\Wang\Desktop\C++\Project1\exp1.cpp(121,55): error C2678: 二进制“[”: 没有找到接受“const Vector<Complex<int>>”类型的左操作数的运算符(或没有可接受的转换)
+      C:\Users\Wang\Desktop\C++\Project1\Vector.h(111,5):
+      可能是“T &Vector<T>::operator [](Rank)”
+          with
+          [
+              T=Complex<int>
+          ]
+          C:\Users\Wang\Desktop\C++\Project1\exp1.cpp(121,55):
+          “T &Vector<T>::operator [](Rank)”: 不能将“this”指针从“const Vector<Complex<int>>”转换为“Vector<Complex<int>> &”
+          with
+          [
+              T=Complex<int>
+          ]
+              C:\Users\Wang\Desktop\C++\Project1\exp1.cpp(121,55):
+              转换丢失限定符
+      C:\Users\Wang\Desktop\C++\Project1\exp1.cpp(121,55):
+      尝试匹配参数列表“(const Vector<Complex<int>>, int)”时
+  
+C:\Users\Wang\Desktop\C++\Project1\exp1.cpp(132,17): error C2001: 常量中有换行符
+C:\Users\Wang\Desktop\C++\Project1\exp1.cpp(133,2): error C2143: 语法错误: 缺少“)”(在“<template-id>”的前面)
+C:\Users\Wang\Desktop\C++\Project1\exp1.cpp(133,2): error C2143: 语法错误: 缺少“;”(在“<template-id>”的前面)
+C:\Users\Wang\Desktop\C++\Project1\exp1.cpp(143,17): error C2001: 常量中有换行符
+C:\Users\Wang\Desktop\C++\Project1\exp1.cpp(144,2): error C2143: 语法错误: 缺少“)”(在“<template-id>”的前面)
+C:\Users\Wang\Desktop\C++\Project1\exp1.cpp(144,2): error C2143: 语法错误: 缺少“;”(在“<template-id>”的前面)
+C:\Users\Wang\Desktop\C++\Project1\exp1.cpp(173,57): error C3861: “to_string”: 找不到标识符
+C:\Users\Wang\Desktop\C++\Project1\exp1.cpp(173,79): error C3861: “to_string”: 找不到标识符
+  Listcpp.cpp
+  Stack.cpp
+C:\Users\Wang\Desktop\C++\Project1\Stack.h(1,9): error C1083: 无法打开包括文件: “Vector.cpp”: No such file or directory
+  (编译源文件“Stack.cpp”)
+  
+  Vector.cpp
+\Vector.cpp(1,1): error C1083: 无法打开源文件: “Vector.cpp”: No such file or directory
+  (编译源文件“/Vector.cpp”)
+  
+  正在生成代码...
