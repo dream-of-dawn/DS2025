@@ -1,84 +1,208 @@
-#include "../Project1/3.cpp"
-#include"../Project1/1.cpp"
+#include "../Project1/Stack.h"
+#include <cmath>
+#include <ctime>
+#include <iomanip>
+#include <string>
 using namespace std;
+
+// å¤æ•°ç±»å®šä¹‰
+class Complex {
+private:
+    double real;  
+    double imag;  
+public:
+    Complex(double r = 0, double i = 0) : real(r), imag(i) {}
+    double getReal() const { return real; }
+    double getImag() const { return imag; }
+    double magnitude() const {
+        return sqrt(real * real + imag * imag);
+    }
+    bool operator==(const Complex& other) const {
+        return (real == other.real) && (imag == other.imag);
+    }
+    bool operator!=(const Complex& other) const {
+        return !(*this == other);
+    }
+    bool operator<(const Complex& other) const {
+        if (magnitude() != other.magnitude()) {
+            return magnitude() < other.magnitude();
+        }
+        return real < other.real;
+    }
+    bool operator>(const Complex& other) const {
+        return other < *this;
+    }
+    bool operator<=(const Complex& other) const {
+        if (magnitude() != other.magnitude()) {
+            return magnitude() <= other.magnitude();
+        }
+        return real <= other.real;
+    }
+
+    friend ostream& operator<<(ostream& os, const Complex& c) {
+        os << fixed << setprecision(2);
+        os << "(" << c.real << ", " << c.imag << ")";
+        os << " [æ¨¡: " << c.magnitude() << "]";
+        return os;
+    }
+};
+
+// æµ‹è¯•æ’åºæ•ˆç‡
+void testSortingEfficiency(Vector<Complex>& vec, const string& caseName) {
+    // å†’æ³¡æ’åº
+    Vector<Complex> bubbleVec = vec;
+    clock_t start = clock();
+    bubbleVec.bubbleSort();
+    clock_t end = clock();
+    double bubbleTime = double(end - start) / CLOCKS_PER_SEC;
+    // å½’å¹¶æ’åº
+    Vector<Complex> mergeVec = vec;
+    start = clock();
+    mergeVec.mergeSort();
+    end = clock();
+    double mergeTime = double(end - start) / CLOCKS_PER_SEC;
+    cout << caseName << "æ’åºç®—æ³•æ€§èƒ½å¯¹æ¯”" << endl;
+    cout << "  å†’æ³¡æ’åºè€—æ—¶: " << fixed << setprecision(6) << bubbleTime << " ç§’" << endl;
+    cout << "  å½’å¹¶æ’åºè€—æ—¶: " << fixed << setprecision(6) << mergeTime << " ç§’" << endl;
+    cout << "  å½’å¹¶æ’åºæ¯”å†’æ³¡æ’åºå¿« " << fixed << setprecision(2) << (bubbleTime / mergeTime) << " å€" << endl << endl;
+}
+
+// åœ¨å·²æ’åºçš„å‘é‡ä¸­æŸ¥æ‰¾æ¨¡åœ¨[m1, m2)èŒƒå›´å†…çš„å¤æ•°
+Vector<Complex> findInRange(Vector<Complex>& sortedVec, double m1, double m2) {
+    Vector<Complex> result;
+    for (int i = 0; i < sortedVec.size(); ++i) {
+        double mag = sortedVec[i].magnitude();
+        if (mag >= m1 && mag < m2) {
+            result.insert(sortedVec[i]);
+        }
+        else if (mag >= m2) {
+            break;
+        }
+    }
+    return result;
+}
+
+void printVector(Vector<Complex>& vec, const string& msg) {
+    cout << msg << " (" << vec.size() << "ä¸ªå…ƒç´ ):" << endl;
+    for (int i = 0; i < vec.size(); ++i) {
+        cout << vec[i];
+        if (i % 2 == 1) cout << endl; 
+        else cout << "  ";
+    }
+    if (vec.size() % 2 == 1) cout << endl;
+    cout << endl;
+}
+
+// æŸ±çŠ¶å›¾ä¸­æœ€å¤§çŸ©å½¢é¢ç§¯
+int largestRectangleArea(Vector<int>& heights) {
+    Stack<int> st;  // å­˜å‚¨ç´¢å¼•çš„æ ˆ
+    int max_area = 0;
+    int n = heights.size();
+
+    for (int i = 0; i < n; ++i) {
+        // å½“å½“å‰é«˜åº¦å°äºæ ˆé¡¶ç´¢å¼•å¯¹åº”çš„é«˜åº¦æ—¶ï¼Œè®¡ç®—æ ˆé¡¶å…ƒç´ çš„é¢ç§¯
+        while (!st.empty() && heights[i] < heights[st.top()]) {
+            int height = heights[st.top()];
+            st.pop();
+            // å®½åº¦ï¼šå¦‚æœæ ˆä¸ºç©ºï¼Œè¯´æ˜å½“å‰å…ƒç´ æ˜¯å·¦è¾¹æœ€å°çš„ï¼Œå®½åº¦ä¸ºiï¼›å¦åˆ™ä¸ºi - æ ˆé¡¶ç´¢å¼• - 1
+            int width = st.empty() ? i : i - st.top() - 1;
+            max_area = max(max_area, height * width);
+        }
+        st.push(i);
+    }
+
+    // å¤„ç†æ ˆä¸­å‰©ä½™çš„å…ƒç´ 
+    while (!st.empty()) {
+        int height = heights[st.top()];
+        st.pop();
+        // å®½åº¦ï¼šå¦‚æœæ ˆä¸ºç©ºï¼Œè¯´æ˜è¿™ä¸ªé«˜åº¦å¯ä»¥å»¶ä¼¸åˆ°æœ«å°¾ï¼Œå®½åº¦ä¸ºnï¼›å¦åˆ™ä¸ºn - æ ˆé¡¶ç´¢å¼• - 1
+        int width = st.empty() ? n : n - st.top() - 1;
+        max_area = max(max_area, height * width);
+    }
+
+    return max_area;
+}
+
 int main() {
-    // £¨1£©ÔÚÖ÷º¯ÊıÖĞÖ±½ÓÉú³ÉËæ»ú¸´ÊıÏòÁ¿£¨°üº¬ÖØ¸´Ïî£©
+    // ç¬¬ä¸€éƒ¨åˆ†ï¼šåˆ›å»ºå’Œæ“ä½œVector<Complex>
     int vecSize = 20;
     double minVal = -10, maxVal = 10;
     Vector<Complex> complexVec;
 
     for (int i = 0; i < vecSize; ++i) {
-        // 20%¸ÅÂÊÉú³ÉÖØ¸´Ïî£¨¸´ÖÆÇ°Ò»¸öÔªËØ£©
+        // 20%çš„æ¦‚ç‡é‡å¤ä¸Šä¸€ä¸ªå…ƒç´ ï¼ˆæ¨¡æ‹Ÿé‡å¤ï¼‰
         if (i > 0 && rand() % 5 == 0) {
             complexVec.insert(complexVec[i - 1]);
         }
         else {
-            // Éú³ÉËæ»úÊµ²¿ºÍĞé²¿
+            // ç”Ÿæˆéšæœºå®éƒ¨å’Œè™šéƒ¨
             double real = minVal + (rand() % 100) * (maxVal - minVal) / 100.0;
             double imag = minVal + (rand() % 100) * (maxVal - minVal) / 100.0;
-            complexVec.insert(Complex(real, imag));  // ²åÈëĞÂ¸´Êı
+            complexVec.insert(Complex(real, imag));  // æ’å…¥æ–°å¤æ•°
         }
     }
-    printVector(complexVec, "³õÊ¼Ëæ»ú¸´ÊıÏòÁ¿");
-    // £¨1£©²âÊÔÎŞĞòÏòÁ¿µÄ¸÷ÖÖ²Ù×÷
-    cout << "=== ²âÊÔÎŞĞòÏòÁ¿²Ù×÷ ===" << endl;
-    // ²âÊÔÖÃÂÒ²Ù×÷
+    printVector(complexVec, "åˆå§‹ç”Ÿæˆçš„å¤æ•°å‘é‡");
+
+    // ç¬¬ä¸€éƒ¨åˆ†ï¼šæµ‹è¯•Vectorçš„åŸºæœ¬æ“ä½œ
+    cout << "=== æµ‹è¯•VectoråŸºæœ¬æ“ä½œ ===" << endl;
+    // æ‰“ä¹±é¡ºåº
     complexVec.unsort();
-    printVector(complexVec, "ÖÃÂÒºóµÄÏòÁ¿");
-    // ²âÊÔ²éÕÒ²Ù×÷
+    printVector(complexVec, "æ‰“ä¹±é¡ºåºå");
+    // æŸ¥æ‰¾å…ƒç´ 
     if (!complexVec.empty()) {
-        Complex target = complexVec[5];  // ÒÔµÚ5¸öÔªËØÎªÄ¿±ê
+        Complex target = complexVec[5];  // å‡è®¾æŸ¥æ‰¾ç¬¬5ä¸ªå…ƒç´ 
         Rank found = complexVec.find(target);
         if (found != -1) {
-            cout << "²éÕÒÔªËØ " << target << " ³É¹¦£¬Î»ÖÃ: " << found << endl;
+            cout << "æŸ¥æ‰¾å…ƒç´  " << target << " æˆåŠŸï¼Œä½ç½®: " << found << endl;
         }
         else {
-            cout << "²éÕÒÔªËØ " << target << " Ê§°Ü" << endl;
+            cout << "æŸ¥æ‰¾å…ƒç´  " << target << " å¤±è´¥" << endl;
         }
     }
-    // ²âÊÔ²åÈë²Ù×÷
+    // æ’å…¥å…ƒç´ 
     Complex newComplex(100, 200);
-    complexVec.insert(3, newComplex);  // ÔÚÎ»ÖÃ3²åÈëĞÂÔªËØ
-    printVector(complexVec, "²åÈëÔªËØºóµÄÏòÁ¿");
-    // ²âÊÔÉ¾³ı²Ù×÷
+    complexVec.insert(3, newComplex);  // åœ¨ä½ç½®3æ’å…¥æ–°å…ƒç´ 
+    printVector(complexVec, "åœ¨ä½ç½®3æ’å…¥æ–°å…ƒç´ å");
+    // åˆ é™¤å…ƒç´ 
     if (complexVec.size() > 5) {
-        Complex removed = complexVec.remove(5);  // É¾³ıÎ»ÖÃ5µÄÔªËØ
-        cout << "É¾³ıµÄÔªËØ: " << removed << endl;
-        printVector(complexVec, "É¾³ıÔªËØºóµÄÏòÁ¿");
+        Complex removed = complexVec.remove(5);  // åˆ é™¤ä½ç½®5çš„å…ƒç´ 
+        cout << "åˆ é™¤çš„å…ƒç´ : " << removed << endl;
+        printVector(complexVec, "åˆ é™¤ä½ç½®5çš„å…ƒç´ å");
     }
-    // ²âÊÔÎ¨Ò»»¯²Ù×÷
+    // å»é‡
     int removedCount = complexVec.deduplicate();
-    cout << "Î¨Ò»»¯²Ù×÷É¾³ıÁË " << removedCount << " ¸öÖØ¸´ÔªËØ" << endl;
-    printVector(complexVec, "Î¨Ò»»¯ºóµÄÏòÁ¿");
+    cout << "å»é‡æ“ä½œå…±åˆ é™¤äº† " << removedCount << " ä¸ªé‡å¤å…ƒç´ " << endl;
+    printVector(complexVec, "å»é‡åçš„å‘é‡");
 
-    // £¨2£©²âÊÔÅÅĞòĞ§ÂÊ
-    cout << "=== ²âÊÔÅÅĞòĞ§ÂÊ ===" << endl;
-    // Éú³ÉÈıÖÖ²»Í¬×´Ì¬µÄÏòÁ¿
+    // ç¬¬äºŒéƒ¨åˆ†ï¼šæ’åºç®—æ³•æ€§èƒ½æµ‹è¯•
+    cout << "=== æ’åºç®—æ³•æ€§èƒ½æµ‹è¯• ===" << endl;
+    // åˆ›å»ºæœ‰åºå’Œé€†åºçš„å‘é‡ç”¨äºæµ‹è¯•
     Vector<Complex> orderedVec = complexVec;
-    orderedVec.sort();  // Éú³ÉÓĞĞòÏòÁ¿
+    orderedVec.sort();  // æ’åºå¾—åˆ°æœ‰åºå‘é‡
     Vector<Complex> reversedVec = orderedVec;
-    reversedVec.reverse();  // Éú³ÉÄæĞòÏòÁ¿
-    // ²âÊÔÅÅĞòĞ§ÂÊ
-    testSortingEfficiency(complexVec, "Ëæ»úÏòÁ¿");
-    testSortingEfficiency(orderedVec, "ÓĞĞòÏòÁ¿");
-    testSortingEfficiency(reversedVec, "ÄæĞòÏòÁ¿");
-    // £¨3£©²âÊÔÇø¼ä²éÕÒ
-    cout << "=== ²âÊÔÇø¼ä²éÕÒ ===" << endl;
+    reversedVec.reverse();  // åè½¬å¾—åˆ°é€†åºå‘é‡
+    // æµ‹è¯•ä¸åŒæƒ…å†µä¸‹çš„æ’åºæ•ˆç‡
+    testSortingEfficiency(complexVec, "éšæœºä¹±åº");
+    testSortingEfficiency(orderedVec, "å®Œå…¨æœ‰åº");
+    testSortingEfficiency(reversedVec, "å®Œå…¨é€†åº");
+
+    // ç¬¬ä¸‰éƒ¨åˆ†ï¼šèŒƒå›´æŸ¥æ‰¾
+    cout << "=== èŒƒå›´æŸ¥æ‰¾æµ‹è¯• ===" << endl;
     double m1 = 5.0;
     double m2 = 15.0;
     Vector<Complex> rangeVec = findInRange(orderedVec, m1, m2);
-    printVector(rangeVec, "Ä£ÔÚ[" + to_string(m1) + ", " + to_string(m2) + ")Çø¼äÄÚµÄÔªËØ");
-    cout << "======================µÚ¶şÌâ==============" << endl;
-    char expr[] = "3+4*2/(1-5)!2"; // Ê¾Àı±í´ïÊ½£¨×¢Òâ£º!ÊÇÒ»ÔªÈ¡·´£¬ÕâÀï±íÊ¾¡°(1-5)µÄÈ¡·´¡±£©
-    char rpn[200] = { 0 }; // ´æ´¢Äæ²¨À¼Ê½
-    float res = evaluate(expr, rpn);
-    cout << "±í´ïÊ½£º" << expr << endl;
-    cout << "¼ÆËã½á¹û£º" << res << endl;
-    cout << "=====================µÚÈıÌâ===============" << endl;
-    srand(time(0));  // ³õÊ¼»¯Ëæ»úÊıÖÖ×Ó£¬È·±£Ã¿´ÎÔËĞĞÊı¾İ²»Í¬
+    printVector(rangeVec, "æ¨¡åœ¨[" + to_string(m1) + ", " + to_string(m2) + ")èŒƒå›´å†…çš„å¤æ•°");
+
+    cout << "======================è¡¨è¾¾å¼æ±‚å€¼==============" << endl;
+    char expr[] = "3+4*2/(1-5)*2!"; 
+    char rpn[200] = { 0 }; 
+    float res = evaluate(expr);
+    cout << "è¡¨è¾¾å¼ï¼š" << expr << endl;
+    cout << "è®¡ç®—ç»“æœï¼š" << res << endl;
+    cout << "=====================æœ€å¤§çŸ©å½¢é¢ç§¯æµ‹è¯•===============" << endl;
     for (int i = 0; i < 10; ++i) {
         int length = 10;
-        Vector<int> heights(length);
+        Vector<int> heights(length, length);
         for (int j = 0; j < length; ++j) {
             heights[j] = rand() % 105;
         }
