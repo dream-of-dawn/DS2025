@@ -4,7 +4,8 @@
 #include <iomanip>
 #include <string>
 using namespace std;
-// �����ඨ��
+
+// 复数类定义
 class Complex {
 private:
     double real;  
@@ -41,30 +42,32 @@ public:
     friend ostream& operator<<(ostream& os, const Complex& c) {
         os << fixed << setprecision(2);
         os << "(" << c.real << ", " << c.imag << ")";
-        os << " [ģ: " << c.magnitude() << "]";
+        os << " [模: " << c.magnitude() << "]";
         return os;
     }
 };
-// ��ʱ�����������㷨
+
+// 测试排序效率
 void testSortingEfficiency(Vector<Complex>& vec, const string& caseName) {
-    // ����ð������
+    // 冒泡排序
     Vector<Complex> bubbleVec = vec;
     clock_t start = clock();
     bubbleVec.bubbleSort();
     clock_t end = clock();
     double bubbleTime = double(end - start) / CLOCKS_PER_SEC;
-    // ���Թ鲢����
+    // 归并排序
     Vector<Complex> mergeVec = vec;
     start = clock();
     mergeVec.mergeSort();
     end = clock();
     double mergeTime = double(end - start) / CLOCKS_PER_SEC;
-    cout << caseName << "����Ч�ʣ�" << endl;
-    cout << "  ð������ʱ��: " << fixed << setprecision(6) << bubbleTime << " ��" << endl;
-    cout << "  �鲢����ʱ��: " << fixed << setprecision(6) << mergeTime << " ��" << endl;
-    cout << "  �鲢�����ð������� " << fixed << setprecision(2) << (bubbleTime / mergeTime) << " ��" << endl << endl;
+    cout << caseName << "排序算法性能对比" << endl;
+    cout << "  冒泡排序耗时: " << fixed << setprecision(6) << bubbleTime << " 秒" << endl;
+    cout << "  归并排序耗时: " << fixed << setprecision(6) << mergeTime << " 秒" << endl;
+    cout << "  归并排序比冒泡排序快 " << fixed << setprecision(2) << (bubbleTime / mergeTime) << " 倍" << endl << endl;
 }
-// �����������в���ģ����[m1, m2)������Ԫ��
+
+// 在已排序的向量中查找模在[m1, m2)范围内的复数
 Vector<Complex> findInRange(Vector<Complex>& sortedVec, double m1, double m2) {
     Vector<Complex> result;
     for (int i = 0; i < sortedVec.size(); ++i) {
@@ -78,8 +81,9 @@ Vector<Complex> findInRange(Vector<Complex>& sortedVec, double m1, double m2) {
     }
     return result;
 }
+
 void printVector(Vector<Complex>& vec, const string& msg) {
-    cout << msg << " (" << vec.size() << "��Ԫ��):" << endl;
+    cout << msg << " (" << vec.size() << "个元素):" << endl;
     for (int i = 0; i < vec.size(); ++i) {
         cout << vec[i];
         if (i % 2 == 1) cout << endl; 
@@ -89,30 +93,29 @@ void printVector(Vector<Complex>& vec, const string& msg) {
     cout << endl;
 }
 
-
-// ������״ͼ������������ĺ���
+// 柱状图中最大矩形面积
 int largestRectangleArea(Vector<int>& heights) {
-    Stack<int> st;  // ����ջ���洢����������ά���߶ȵ���������
+    Stack<int> st;  // 存储索引的栈
     int max_area = 0;
     int n = heights.size();
 
     for (int i = 0; i < n; ++i) {
-        // ����ǰ���Ӹ߶�С��ջ�����Ӹ߶�ʱ������ջ���������γɵ�������
+        // 当当前高度小于栈顶索引对应的高度时，计算栈顶元素的面积
         while (!st.empty() && heights[i] < heights[st.top()]) {
             int height = heights[st.top()];
             st.pop();
-            // ������ȣ���߽�Ϊ��ջ������+1���ұ߽�Ϊ��ǰ����-1
+            // 宽度：如果栈为空，说明当前元素是左边最小的，宽度为i；否则为i - 栈顶索引 - 1
             int width = st.empty() ? i : i - st.top() - 1;
             max_area = max(max_area, height * width);
         }
         st.push(i);
     }
 
-    // ����ջ��ʣ������ӣ��Ҳ����޸��͵����ӣ�
+    // 处理栈中剩余的元素
     while (!st.empty()) {
         int height = heights[st.top()];
         st.pop();
-        // ������ȣ���߽�Ϊ��ջ������+1���ұ߽�Ϊ����ĩβ
+        // 宽度：如果栈为空，说明这个高度可以延伸到末尾，宽度为n；否则为n - 栈顶索引 - 1
         int width = st.empty() ? n : n - st.top() - 1;
         max_area = max(max_area, height * width);
     }
@@ -121,79 +124,82 @@ int largestRectangleArea(Vector<int>& heights) {
 }
 
 int main() {
-    // ��1������������ֱ������������������������ظ��
+    // 第一部分：创建和操作Vector<Complex>
     int vecSize = 20;
     double minVal = -10, maxVal = 10;
     Vector<Complex> complexVec;
 
     for (int i = 0; i < vecSize; ++i) {
-        // 20%���������ظ������ǰһ��Ԫ�أ�
+        // 20%的概率重复上一个元素（模拟重复）
         if (i > 0 && rand() % 5 == 0) {
             complexVec.insert(complexVec[i - 1]);
         }
         else {
-            // �������ʵ�����鲿
+            // 生成随机实部和虚部
             double real = minVal + (rand() % 100) * (maxVal - minVal) / 100.0;
             double imag = minVal + (rand() % 100) * (maxVal - minVal) / 100.0;
-            complexVec.insert(Complex(real, imag));  // �����¸���
+            complexVec.insert(Complex(real, imag));  // 插入新复数
         }
     }
-    printVector(complexVec, "��ʼ�����������");
-    // ��1���������������ĸ��ֲ���
-    cout << "=== ���������������� ===" << endl;
-    // �������Ҳ���
+    printVector(complexVec, "初始生成的复数向量");
+
+    // 第一部分：测试Vector的基本操作
+    cout << "=== 测试Vector基本操作 ===" << endl;
+    // 打乱顺序
     complexVec.unsort();
-    printVector(complexVec, "���Һ������");
-    // ���Բ��Ҳ���
+    printVector(complexVec, "打乱顺序后");
+    // 查找元素
     if (!complexVec.empty()) {
-        Complex target = complexVec[5];  // �Ե�5��Ԫ��ΪĿ��
+        Complex target = complexVec[5];  // 假设查找第5个元素
         Rank found = complexVec.find(target);
         if (found != -1) {
-            cout << "����Ԫ�� " << target << " �ɹ���λ��: " << found << endl;
+            cout << "查找元素 " << target << " 成功，位置: " << found << endl;
         }
         else {
-            cout << "����Ԫ�� " << target << " ʧ��" << endl;
+            cout << "查找元素 " << target << " 失败" << endl;
         }
     }
-    // ���Բ������
+    // 插入元素
     Complex newComplex(100, 200);
-    complexVec.insert(3, newComplex);  // ��λ��3������Ԫ��
-    printVector(complexVec, "����Ԫ�غ������");
-    // ����ɾ������
+    complexVec.insert(3, newComplex);  // 在位置3插入新元素
+    printVector(complexVec, "在位置3插入新元素后");
+    // 删除元素
     if (complexVec.size() > 5) {
-        Complex removed = complexVec.remove(5);  // ɾ��λ��5��Ԫ��
-        cout << "ɾ����Ԫ��: " << removed << endl;
-        printVector(complexVec, "ɾ��Ԫ�غ������");
+        Complex removed = complexVec.remove(5);  // 删除位置5的元素
+        cout << "删除的元素: " << removed << endl;
+        printVector(complexVec, "删除位置5的元素后");
     }
-    // ����Ψһ������
+    // 去重
     int removedCount = complexVec.deduplicate();
-    cout << "Ψһ������ɾ���� " << removedCount << " ���ظ�Ԫ��" << endl;
-    printVector(complexVec, "Ψһ���������");
+    cout << "去重操作共删除了 " << removedCount << " 个重复元素" << endl;
+    printVector(complexVec, "去重后的向量");
 
-    // ��2����������Ч��
-    cout << "=== ��������Ч�� ===" << endl;
-    // �������ֲ�ͬ״̬������
+    // 第二部分：排序算法性能测试
+    cout << "=== 排序算法性能测试 ===" << endl;
+    // 创建有序和逆序的向量用于测试
     Vector<Complex> orderedVec = complexVec;
-    orderedVec.sort();  // ������������
+    orderedVec.sort();  // 排序得到有序向量
     Vector<Complex> reversedVec = orderedVec;
-    reversedVec.reverse();  // ������������
-    // ��������Ч��
-    testSortingEfficiency(complexVec, "�������");
-    testSortingEfficiency(orderedVec, "��������");
-    testSortingEfficiency(reversedVec, "��������");
-    // ��3�������������
-    cout << "=== ����������� ===" << endl;
+    reversedVec.reverse();  // 反转得到逆序向量
+    // 测试不同情况下的排序效率
+    testSortingEfficiency(complexVec, "随机乱序");
+    testSortingEfficiency(orderedVec, "完全有序");
+    testSortingEfficiency(reversedVec, "完全逆序");
+
+    // 第三部分：范围查找
+    cout << "=== 范围查找测试 ===" << endl;
     double m1 = 5.0;
     double m2 = 15.0;
     Vector<Complex> rangeVec = findInRange(orderedVec, m1, m2);
-    printVector(rangeVec, "ģ��[" + to_string(m1) + ", " + to_string(m2) + ")�����ڵ�Ԫ��");
-    cout << "======================�ڶ���==============" << endl;
+    printVector(rangeVec, "模在[" + to_string(m1) + ", " + to_string(m2) + ")范围内的复数");
+
+    cout << "======================表达式求值==============" << endl;
     char expr[] = "3+4*2/(1-5)*2!"; 
     char rpn[200] = { 0 }; 
     float res = evaluate(expr);
-    cout << "����ʽ��" << expr << endl;
-    cout << "��������" << res << endl;
-    cout << "=====================������===============" << endl;
+    cout << "表达式：" << expr << endl;
+    cout << "计算结果：" << res << endl;
+    cout << "=====================最大矩形面积测试===============" << endl;
     for (int i = 0; i < 10; ++i) {
         int length = 10;
         Vector<int> heights(length, length);
@@ -206,4 +212,3 @@ int main() {
 
     return 0;
 }
-
